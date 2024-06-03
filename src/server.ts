@@ -13,7 +13,6 @@ const startServer = async () => {
 
   const app = express();
 
-  // Middleware to parse JSON requests
   app.use(express.json());
 
   const server = new ApolloServer({ typeDefs, resolvers });

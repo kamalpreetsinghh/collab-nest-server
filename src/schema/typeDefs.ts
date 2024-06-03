@@ -22,10 +22,17 @@ export const typeDefs = `#graphql
     title: String!
     description: String!
     image: String!
-    liveSiteUrl: String!
+    websiteUrl: String!
     githubUrl: String!
     category: String!
     createdBy: User!
+  }
+
+  type ProjectPagination {
+    projects: [Project!]!
+    totalProjects: Int!
+    totalPages: Int!
+    currentPage: Int!
   }
 
   type Query {
@@ -33,25 +40,23 @@ export const typeDefs = `#graphql
     user(id: ID!): User
     userByEmail(email: String!): User
     usernamesByName(name: String!): [String!]!
-    projects: [Project!]!
+    projects(page: Int!, limit: Int!): ProjectPagination!
     project(id: ID!): Project
+    getUserProjects(userId: ID!, page: Int, limit: Int): ProjectPagination!
   }
 
   input CreateUserInput {
     name: String!
     username: String!
     email: String!
-    description: String
+    password: String
     image: String
-    githubUrl: String
-    linkedInUrl: String
-    websiteUrl: String
   }
 
   input UpdateUserInput {
     name: String
     username: String
-    email: String
+    password: String
     description: String
     image: String
     githubUrl: String
@@ -63,15 +68,26 @@ export const typeDefs = `#graphql
     title: String!
     description: String!
     image: String!
-    liveSiteUrl: String!
+    websiteUrl: String!
     githubUrl: String!
     category: String!
     createdBy: ID!
+  }
+
+  input UpdateProjectInput {
+    title: String
+    description: String
+    image: String
+    websiteUrl: String
+    githubUrl: String
+    category: String
   }
 
   type Mutation {
     createUser(input: CreateUserInput!): User!
     updateUser(id: ID!, input: UpdateUserInput!): User!
     createProject(input: CreateProjectInput!): Project!
+    updateProject(id: ID!, input: UpdateProjectInput!): Project!
+    deleteProject(id: ID!): Boolean!
   }
 `;
