@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { Project, IProject } from "../models/Project.js";
-import { User, IUser } from "../models/User.js";
+import { Project, IProject } from "../models/Project";
+import { User, IUser } from "../models/User";
 
 export const resolvers = {
   Query: {

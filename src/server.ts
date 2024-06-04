@@ -2,14 +2,14 @@ import express from "express";
 import dotenv from "dotenv";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
-import { typeDefs } from "./schema/typeDefs.js";
-import { resolvers } from "./schema/resolvers.js";
-import connectToDatabase from "./lib/dbConfig.js";
+import { typeDefs } from "./schema/typeDefs";
+import { resolvers } from "./schema/resolvers";
+import connectDB from "./lib/dbConfig";
 
 const startServer = async () => {
   dotenv.config();
 
-  connectToDatabase();
+  connectDB();
 
   const app = express();
 
