@@ -40,7 +40,7 @@ export const typeDefs = `#graphql
     user(id: ID!): User
     userByEmail(email: String!): User
     usernamesByName(name: String!): [String!]!
-    projects(page: Int!, limit: Int!): ProjectPagination!
+    projects(page: Int!, limit: Int!, category: String!): ProjectPagination!
     project(id: ID!): Project
     getUserProjects(userId: ID!, page: Int, limit: Int): ProjectPagination!
   }

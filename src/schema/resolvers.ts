@@ -22,19 +22,26 @@ export const resolvers = {
     },
     projects: async (
       _: any,
-      { page = 1, limit = 8 }: { page?: number; limit?: number }
+      {
+        page = 1,
+        limit = 8,
+        category,
+      }: { page?: number; limit?: number; category: string }
     ): Promise<{
       projects: IProject[];
       totalProjects: number;
       totalPages: number;
       currentPage: number;
     }> => {
-      const totalProjects = await Project.countDocuments({});
-      const totalPages = Math.ceil(totalProjects / limit) || 1;
-      const projects = await Project.find({})
-        .skip((page - 1) * limit)
+      const query = category !== "Discover" ? { category } : {};
+      const skip = (page - 1) * limit;
+      const projects = await Project.find(query)
+        .skip(skip)
         .limit(limit)
         .populate("createdBy");
+      const totalProjects = await Project.countDocuments(query);
+      const totalPages = Math.ceil(totalProjects / limit) || 1;
+
       return { projects, totalProjects, totalPages, currentPage: page };
     },
     project: async (_: any, { id }: { id: string }): Promise<IProject | null> =>
