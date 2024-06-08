@@ -10,12 +10,18 @@ dotenv.config();
 connectDB();
 
 const app = express();
-app.use(express.json());
+// app.use(express.json());
 
-const server = new ApolloServer({ typeDefs, resolvers });
+// const server = new ApolloServer({ typeDefs, resolvers });
 
-server.start().then(() => {
-  app.use("/graphql", expressMiddleware(server));
-});
+// server.start().then(() => {
+//   app.use("/graphql", expressMiddleware(server));
+// });
+
+// export default app;
+
+app.get("/", (req, res) => res.send("Express on Vercel"));
+
+app.listen(3000, () => console.log("Server ready on port 3000."));
 
 export default app;
