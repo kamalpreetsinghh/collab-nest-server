@@ -42,7 +42,7 @@ export const typeDefs = `#graphql
     usernamesByName(name: String!): [String!]!
     projects(page: Int!, limit: Int!, category: String!): ProjectPagination!
     project(id: ID!): Project
-    getUserProjects(userId: ID!, page: Int, limit: Int): ProjectPagination!
+    getUserProjects(id: ID!, limit: Int): [Project!]!
   }
 
   input CreateUserInput {

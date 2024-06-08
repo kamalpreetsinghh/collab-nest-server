@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { Project, IProject } from "../models/Project";
 import { User, IUser } from "../models/User";
+import { CreateUserInput } from "../types/types";
 
 export const resolvers = {
   Query: {
@@ -48,36 +49,20 @@ export const resolvers = {
       await Project.findById(id).populate("createdBy"),
     getUserProjects: async (
       _: any,
-      {
-        userId,
-        page = 1,
-        limit = 8,
-      }: { userId: string; page?: number; limit?: number }
-    ): Promise<{
-      projects: IProject[];
-      totalProjects: number;
-      totalPages: number;
-      currentPage: number;
-    }> => {
-      const totalProjects = await Project.countDocuments({ createdBy: userId });
-      const totalPages = Math.ceil(totalProjects / limit) || 1;
-      const projects = await Project.find({ createdBy: userId })
-        .skip((page - 1) * limit)
+      { id, limit = 8 }: { id: string; limit?: number }
+    ): Promise<IProject[]> => {
+      const projects = await Project.find({ createdBy: id })
         .limit(limit)
         .populate("createdBy");
-      return { projects, totalProjects, totalPages, currentPage: page };
+      return projects;
     },
   },
   Mutation: {
-    createUser: async (_: any, { input }: { input: IUser }): Promise<IUser> => {
-      const { name, username, email, image } = input;
-
-      const newUser = new User({
-        name,
-        username,
-        email,
-        image,
-      });
+    createUser: async (
+      _: any,
+      { input }: { input: CreateUserInput }
+    ): Promise<IUser> => {
+      const newUser = new User(input);
 
       await newUser.save();
       return newUser;
