@@ -6,23 +6,16 @@ import { typeDefs } from "./schema/typeDefs";
 import { resolvers } from "./schema/resolvers";
 import connectDB from "./lib/dbConfig";
 
-const startServer = async () => {
-  dotenv.config();
+dotenv.config();
+connectDB();
 
-  connectDB();
+const app = express();
+app.use(express.json());
 
-  const app = express();
+const server = new ApolloServer({ typeDefs, resolvers });
 
-  app.use(express.json());
-
-  const server = new ApolloServer({ typeDefs, resolvers });
-  await server.start();
-
+server.start().then(() => {
   app.use("/graphql", expressMiddleware(server));
-  const port = 4000;
-  app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}/graphql`);
-  });
-};
+});
 
-startServer();
+export default app;
