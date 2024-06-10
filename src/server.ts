@@ -6,22 +6,23 @@ import { typeDefs } from "./schema/typeDefs";
 import { resolvers } from "./schema/resolvers";
 import connectDB from "./lib/dbConfig";
 
-dotenv.config();
-connectDB();
+const startServer = async () => {
+  dotenv.config();
 
-const app = express();
-// app.use(express.json());
+  connectDB();
 
-// const server = new ApolloServer({ typeDefs, resolvers });
+  const app = express();
 
-// server.start().then(() => {
-//   app.use("/graphql", expressMiddleware(server));
-// });
+  app.use(express.json());
 
-// export default app;
+  const server = new ApolloServer({ typeDefs, resolvers });
+  await server.start();
 
-app.get("/", (req, res) => res.send("Express on Vercel"));
+  app.use("/graphql", expressMiddleware(server));
+  const port = 4000;
+  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}/graphql`);
+  });
+};
 
-app.listen(3000, () => console.log("Server ready on port 3000."));
-
-export default app;
+startServer();

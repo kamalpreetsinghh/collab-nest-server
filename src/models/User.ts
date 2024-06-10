@@ -1,4 +1,4 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import mongoose, { Document, Model, Schema, Types } from "mongoose";
 
 export interface IUser extends Document {
   name: string;
@@ -11,6 +11,10 @@ export interface IUser extends Document {
   linkedInUrl: string | null;
   websiteUrl: string | null;
   projects: mongoose.Types.ObjectId[];
+  followers: Types.ObjectId[];
+  following: Types.ObjectId[];
+  forgotPasswordToken: String | null;
+  forgotPasswordTokenExpiry: String | null;
 }
 
 const UserSchema: Schema<IUser> = new mongoose.Schema({
@@ -24,6 +28,10 @@ const UserSchema: Schema<IUser> = new mongoose.Schema({
   linkedInUrl: { type: String, default: null },
   websiteUrl: { type: String, default: null },
   projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
+  followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  forgotPasswordToken: { type: String, default: null },
+  forgotPasswordTokenExpiry: { type: String, default: null },
 });
 
 export const User: Model<IUser> =

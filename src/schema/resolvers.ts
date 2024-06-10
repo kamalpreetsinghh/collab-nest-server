@@ -8,18 +8,34 @@ export const resolvers = {
     users: async (): Promise<IUser[]> =>
       await User.find({}).populate("projects"),
     user: async (_: any, { id }: { id: string }): Promise<IUser | null> =>
-      await User.findById(id).populate("projects"),
+      await User.findById(id)
+        .populate("projects")
+        .populate("followers")
+        .populate("following"),
     userByEmail: async (
       _: any,
       { email }: { email: string }
     ): Promise<IUser | null> =>
       await User.findOne({ email }).populate("projects"),
+    userByPasswordToken: async (
+      _: any,
+      { forgotPasswordToken }: { forgotPasswordToken: string }
+    ): Promise<IUser | null> =>
+      await User.findOne({ forgotPasswordToken }).populate("projects"),
     usernamesByName: async (
       _: any,
       { name }: { name: string }
     ): Promise<string[]> => {
       const users = await User.find({ name });
       return users.map((user) => user.username);
+    },
+    followers: async (_: any, { userId }: { userId: string }) => {
+      const user = await User.findById(userId).populate("followers");
+      return user ? user.followers : [];
+    },
+    following: async (_: any, { userId }: { userId: string }) => {
+      const user = await User.findById(userId).populate("following");
+      return user ? user.following : [];
     },
     projects: async (
       _: any,
@@ -78,6 +94,40 @@ export const resolvers = {
         throw new Error("User not found");
       }
       return updatedUser;
+    },
+    followUser: async (
+      _: any,
+      { userId, followId }: { userId: string; followId: string }
+    ) => {
+      const user = await User.findById(userId);
+      const followUser = await User.findById(followId);
+      if (user && followUser) {
+        if (!user.following.includes(new mongoose.Types.ObjectId(followId))) {
+          user.following.push(new mongoose.Types.ObjectId(followId));
+          followUser.followers.push(new mongoose.Types.ObjectId(userId));
+          await user.save();
+          await followUser.save();
+        }
+      }
+      return user;
+    },
+    unfollowUser: async (
+      _: any,
+      { userId, unfollowId }: { userId: string; unfollowId: string }
+    ) => {
+      const user = await User.findById(userId);
+      const unfollowUser = await User.findById(unfollowId);
+      if (user && unfollowUser) {
+        user.following = user.following.filter(
+          (id) => id.toString() !== unfollowId
+        );
+        unfollowUser.followers = unfollowUser.followers.filter(
+          (id) => id.toString() !== userId
+        );
+        await user.save();
+        await unfollowUser.save();
+      }
+      return user;
     },
     createProject: async (
       _: any,
