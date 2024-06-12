@@ -93,6 +93,7 @@ export const typeDefs = `#graphql
     updateUser(id: ID!, input: UpdateUserInput!): User!
     followUser(userId: ID!, followId: ID!): User
     unfollowUser(userId: ID!, unfollowId: ID!): User
+    removeFollower(userId: ID!, followerId: ID!): User
     createProject(input: CreateProjectInput!): Project!
     updateProject(id: ID!, input: UpdateProjectInput!): Project!
     deleteProject(id: ID!): Boolean!

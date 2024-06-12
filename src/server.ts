@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { typeDefs } from "./schema/typeDefs";
@@ -12,6 +13,12 @@ const startServer = async () => {
   connectDB();
 
   const app = express();
+
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+    })
+  );
 
   app.use(express.json());
 

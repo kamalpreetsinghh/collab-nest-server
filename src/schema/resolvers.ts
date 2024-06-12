@@ -129,6 +129,24 @@ export const resolvers = {
       }
       return user;
     },
+    removeFollower: async (
+      _: any,
+      { userId, followerId }: { userId: string; followerId: string }
+    ) => {
+      const user = await User.findById(userId);
+      const followerUser = await User.findById(followerId);
+      if (user && followerUser) {
+        user.followers = user.followers.filter(
+          (id) => id.toString() !== followerId
+        );
+        followerUser.following = followerUser.following.filter(
+          (id) => id.toString() !== userId
+        );
+        await user.save();
+        await followerUser.save();
+      }
+      return user;
+    },
     createProject: async (
       _: any,
       { input }: { input: IProject }
